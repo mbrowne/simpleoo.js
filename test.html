@@ -1,0 +1,48 @@
+<script>
+
+//This is just for the purposes of this test file; in a real application you should use an AMD loader
+//such as this: https://github.com/cujojs/curl
+var simpleoo;
+function define(dependencies, definition) {
+	simpleoo = definition();
+}
+
+</script>
+<script src="simpleoo.js"></script>
+<script>
+
+var log = console.log;
+var extend = simpleoo.extend;
+
+function Pet(name) {
+	this.name = name;
+}
+Pet.prototype = {
+	eat: function() { console.log('yum'); }
+};
+
+function Cat() {
+	Pet.apply(this, arguments);
+}
+
+Cat.prototype = new Pet();
+Cat.prototype.meow = function() { console.log('meow'); };
+
+Cat.prototype = extend(Pet.prototype, {
+   meow: function() { console.log('meow'); }	
+});
+
+var garfield = new Cat('Garfield');
+
+
+log(garfield.name);
+
+log(garfield);
+
+garfield.eat();
+garfield.meow();
+
+log(garfield instanceof Cat); //true
+log(garfield instanceof Pet); //true
+
+</script>

@@ -2,15 +2,13 @@
 /*
    Example usage:
    
-   function Animal() {};
+   function Animal() {}
    Animal.prototype = {
-        constructor: Animal,
         eat: function() { console.log('yum'); }
    };
    
-   function Cat() {};
+   function Cat() {}
    Cat.prototype = extend(Animal.prototype, {
-       constructor: Cat,
        meow: function() { console.log('meow'); } 
    })
 
@@ -55,24 +53,23 @@ define([], function() {
             if(src.hasOwnProperty('toString') && typeof src.toString === 'function') {
                 result.toString = src.toString;
             }
-
         }
-        
-        //This makes it possible to optionally pass in a constructor property pointing back
-        //to the constructor function for the *last* src argument, so the instanceof
-        //operator will work (see examples above)
-        if (arguments.length>1) {
-            var lastSrc = arguments[arguments.length-1];
-            result.constructor = lastSrc;
-        }
-        else result.constructor = Object;
         
         return result;
     }
     
+    var Base = {
+        extend: function() {            
+            var ret = extend.apply(null, [this].concat(Array.prototype.slice.call(arguments)) );
+            ret.constructor = this;
+            return ret;
+        }
+    }
+    
     return {
         mixin: mixin,
-        extend: extend
+        extend: extend,
+        Base: Base
     }
 });
 })(typeof define != 'undefined' ? define : function(deps, factory) { module.exports = factory(); });
