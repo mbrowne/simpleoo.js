@@ -11,13 +11,13 @@ as close to Javascript's built-in inheritance model as possible.
 
 var extend = simpleoo.extend;
 
-function Animal() {};
+function Animal() {}
 
 Animal.prototype = {
 	eat: function() { console.log('yum'); }
 };
 
-function Cat() {};
+function Cat() {}
 Cat.prototype = extend(Animal.prototype, {
    meow: function() { console.log('meow'); } 
 })
