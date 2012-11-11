@@ -68,14 +68,6 @@ define([], function() {
         return result;
     }
     
-    var Base = {
-        extend: function() {            
-            var ret = extend.apply(null, [this].concat(Array.prototype.slice.call(arguments)) );
-            ret.constructor = this;
-            return ret;
-        }
-    }
-    
     return {
         mixin: mixin,
         extend: extend
