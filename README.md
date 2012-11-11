@@ -137,7 +137,7 @@ function Animal() {
 Any properties set on the prototype should either be set to simple literals like strings, numbers, booleans, or null.
 To be safe, simply don't put properties on the prototype at all - only use it for methods.
 
-For more details, see See http://www.bennadel.com/blog/1566-Using-Super-Constructors-Is-Critical-In-Prototypal-Inheritance-In-Javascript.htm.
+For more details, see http://www.bennadel.com/blog/1566-Using-Super-Constructors-Is-Critical-In-Prototypal-Inheritance-In-Javascript.htm.
 
 
 ### Example 3 - Mixins / multiple inheritance using the mixin function ###
@@ -147,7 +147,7 @@ Unlike the extend function, it operates directly on the first argument passed to
 Object.create and returning a new object. This also means no new prototype is created.
 
 To be clear, extend() will return a *new* object whereas mixin() returns the *same* object given
-(after adding new members to it of course).
+(after adding new members to it of course, or overriding existing ones).
 
 With both the extend function and the mixin function, later arguments override earlier arguments if there are members with the same name.
 

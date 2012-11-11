@@ -1,0 +1,10 @@
+{
+  "name": "simpleoo",
+  "description": "A simple utility to make prototypal inheritance in Javascript a bit easier",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mbrowne/simpleoo.js"
+  },
+  "version": "0.1.0",
+  "main": "./simpleoo.js"
+}
