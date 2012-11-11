@@ -77,12 +77,14 @@ define([], function() {
     
     /**
      * 3 forms:
-     * createPrototype(ctor, newProps)
+     * createPrototype(ctor, mixin1)
+     * [NOT YET IMPLEMENTED:]
+     * This will become: createPrototype(ctor, mixin1 [, mixin2, mixin3, ...])
      * 
-     * createPrototype(ctor, parentProto, newProps)
+     * createPrototype(ctor, parentProto, mixin1)
      * 
      * [NOT YET IMPLEMENTED:]
-     * createPrototype(ctor, parentProto, mixin1 [, mixin2, mixin3, ...], newProps)
+     * createPrototype(ctor, parentProto, mixin1 [, mixin2, mixin3, ...])
      */
     function createPrototype(ctor /*, other arguments... */) {
         var proto;

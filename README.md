@@ -73,13 +73,13 @@ Using this method the prototype.constructor property is always set to the constr
 first argument. This gives more useful debugging output in the console.
 
 The two forms currently supported are:
-createPrototype(ctor, newProperties)
-createPrototype(ctor, parentPrototype, newProperties)
+createPrototype(ctor, mixin)
+createPrototype(ctor, parentPrototype, mixin)
 
 ctor stands for 'constructor'.
 
 Coming soon:
-createPrototype(ctor, parentPrototype, mixin1 [, mixin2, mixin3, ...], newProperties)
+createPrototype(ctor, parentPrototype, mixin1 [, mixin2, mixin3, ...])
 
 ```js
 var createPrototype = simpleoo.createPrototype;
