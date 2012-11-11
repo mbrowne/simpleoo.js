@@ -85,10 +85,6 @@ define([], function() {
      * createPrototype(ctor, parentProto, mixin1 [, mixin2, mixin3, ...], newProps)
      */
     function createPrototype(ctor /*, other arguments... */) {
-        /*
-        ctor.prototype = extend(parentProto, newProps);
-        ctor.prototype.constructor = ctor;
-        */
         var proto;
         var newProps = arguments[arguments.length-1];
         if (arguments.length==2) {
@@ -104,17 +100,15 @@ define([], function() {
     
     /**
      * Deep copy an object (make copies of all its object properties, sub-properties, etc.)
-     * 
-     * Based on http://stackoverflow.com/a/122190/560114
+     * An improved version of http://keithdevens.com/weblog/archive/2007/Jun/07/javascript.clone
+     * that doesn't break if the constructor has required parameters
      */ 
     function deepCopy(obj) {
         if(obj == null || typeof(obj) !== 'object'){
             return obj;
         }
-        //var ret = object_create(obj.constructor);
-        //ret.constructor = obj.constructor;
-        var ret = (typeof obj.constructor=='function' ? obj.constructor(): {});
-        
+        //make sure the returned object has the same prototype as the original
+        var ret = object_create(obj.constructor.prototype);
         for(var key in obj){
             ret[key] = deepCopy(obj[key]);
         }

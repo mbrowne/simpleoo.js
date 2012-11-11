@@ -19,12 +19,12 @@ var deepCopy = simpleoo.deepCopy;
 function Pet(name) {
 	this.name = name || null;
 }
-Pet.prototype = createPrototype(Pet, {   
+Pet.prototype = {   
 	eat: function() { console.log('yum'); }
-});
+};
 //instanceof will still work correctly without this, but this gives nicer output in the console;
 //if we do console.log(myPet) it will say 'Pet' instead of just 'Object'
-Pet.prototype.constructor = Pet;
+//Pet.prototype.constructor = Pet;
 
 var pet = new Pet('test');
 log(pet);
@@ -49,10 +49,6 @@ Cat.prototype = extend(Pet.prototype, {
     meow: function() { console.log('meow'); }   
 });
 Cat.prototype.constructor = Cat;
-
-Cat.prototype = createPrototype(Cat, Pet.prototype, {
-    meow: function() { console.log('meow'); }
-});
 
 
 var garfield = new Cat('Garfield');

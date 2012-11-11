@@ -98,8 +98,8 @@ var garfield = new Cat();
 console.log(garfield instanceof Cat); //true
 console.log(garfield instanceof Animal); //true
 
-console.log(new Animal());  //this will show 'Animal' in the console instead of just 'Object' as in the above example
-console.log(garfield);  //this will show 'Pet' in the console instead of just 'Object' as in the above example
+console.log(new Animal());  //this will show 'Animal' in the console instead of just 'Object' like the above example
+console.log(garfield);  //this will show 'Pet' in the console instead of just 'Object' like the above example
 ```
 
 ### Example 3 - Calling a parent method ###
