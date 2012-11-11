@@ -13,6 +13,7 @@ function define(dependencies, definition) {
 
 var log = console.log;
 var extend = simpleoo.extend;
+var mixin = simpleoo.mixin;
 
 function Pet(name) {
 	this.name = name;
@@ -44,5 +45,40 @@ garfield.meow();
 
 log(garfield instanceof Cat); //true
 log(garfield instanceof Pet); //true
+
+
+function Person() {
+}
+
+function Student() {}
+Student.prototype = extend(Person, {
+	study: function() { console.log('study'); }
+});
+
+function Employee() {}
+Employee.prototype = extend(Person, {
+	work: function() { console.log('work'); }
+});
+
+var fred = new Person();
+
+//Fred is both a student and an employee
+fred = extend(fred, Student.prototype, Employee.prototype);
+
+//only works in browsers supporting ECMAScript 5 or above
+//for older browsers you can try the non-standard fred.__proto__
+if (Object.getPrototypeOf) {
+	log( Object.getPrototypeOf(fred) ); //Person
+}
+
+fred.study();
+fred.work();
+
+log(fred instanceof Person); //true
+
+//This is false, because Javascript only has a single prototype property,
+//and it was already set to Person.prototype  
+log(fred instanceof Employee); //false
+
 
 </script>
