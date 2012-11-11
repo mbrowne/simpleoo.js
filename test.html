@@ -16,7 +16,7 @@ var extend = simpleoo.extend;
 var mixin = simpleoo.mixin;
 
 function Pet(name) {
-	this.name = name;
+	this.name = name || null;
 }
 Pet.prototype = {
 	eat: function() { console.log('yum'); }
@@ -26,10 +26,8 @@ function Cat() {
 	Pet.apply(this, arguments);
 }
 
-Cat.prototype = new Pet();
-Cat.prototype.meow = function() { console.log('meow'); };
-
 Cat.prototype = extend(Pet.prototype, {
+   //eat: function() { console.log('overridden eat'); },
    meow: function() { console.log('meow'); }	
 });
 
@@ -63,7 +61,7 @@ Employee.prototype = extend(Person, {
 var fred = new Person();
 
 //Fred is both a student and an employee
-fred = extend(fred, Student.prototype, Employee.prototype);
+mixin(fred, Student.prototype, Employee.prototype);
 
 //only works in browsers supporting ECMAScript 5 or above
 //for older browsers you can try the non-standard fred.__proto__
@@ -79,6 +77,5 @@ log(fred instanceof Person); //true
 //This is false, because Javascript only has a single prototype property,
 //and it was already set to Person.prototype  
 log(fred instanceof Employee); //false
-
 
 </script>

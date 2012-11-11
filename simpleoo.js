@@ -30,13 +30,16 @@ define([], function() {
     
     var emptyObject = {};
 
-    function mixin(dst, src) {
-        for(var s in src) {
-            if(src.hasOwnProperty(s) && !dst.hasOwnProperty(s) && !(s in emptyObject)) {
-                dst[s] = src[s];
+    function mixin(dst, src1 /*, src2, src3, ... */) {
+        var src;
+        for(i = arguments.length - 1; i > 0; --i) {
+            src = arguments[i];
+            for(var s in src) {
+                if(src.hasOwnProperty(s) && !dst.hasOwnProperty(s) && !(s in emptyObject)) {
+                    dst[s] = src[s];
+                }
             }
         }
-    
         return dst;
     }
     
@@ -45,7 +48,7 @@ define([], function() {
 
         //Use the first object provided as the prototype
         result = object_create(src1);
-
+        
         for(i = arguments.length - 1; i > 0; --i) {
             src = arguments[i];
             result = mixin(result, src);

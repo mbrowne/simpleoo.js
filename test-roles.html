@@ -1,0 +1,59 @@
+<script>
+
+//This is just for the purposes of this test file; in a real application you should use an AMD loader
+//such as this: https://github.com/cujojs/curl
+var simpleoo;
+function define(dependencies, definition) {
+	simpleoo = definition();
+}
+
+</script>
+<script src="simpleoo.js"></script>
+<script>
+
+var log = console.log;
+var extend = simpleoo.extend;
+var mixin = simpleoo.mixin;
+
+function Person() {}
+
+Person.prototype.addRoles = function(role1 /*, role2, ... */) {
+	if (this.initRole) {
+		throw new Error("addRoles method doesn't work if an initRole method exists on the Person prototype");
+	}
+	for(var i = arguments.length - 1; i >= 0; --i) {
+		var role = arguments[i];
+		if (typeof role.initRole=='function') {
+			role.initRole.call(this);
+		}		
+		mixin(this, role);
+	}
+	delete this.initRole;
+};
+
+var studentRole = {
+	initRole: function() {
+		console.log('init student');
+		this.school = null;
+		this.numCourses = null;
+	},
+	study: function() {}
+}
+
+var employeeRole = {
+	initRole: function() {
+		console.log('init employee');
+		this.employer = null;
+	},
+	work: function() {}
+}
+
+var fred = new Person();
+fred.addRoles(studentRole, employeeRole);
+
+fred.school = fred.employer = "Cyberland College";
+fred.numCourses = 4;
+
+console.log(fred);
+
+</script>

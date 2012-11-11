@@ -35,7 +35,7 @@ Parent/super methods should be called just the way they would in traditional Jav
 var extend = simpleoo.extend;
 
 function Pet(name) {
-	this.name = name;
+	this.name = name || null; //default to null if no name is provided
 }
 Pet.prototype = { /* ... */ };
 
@@ -80,7 +80,11 @@ properties. (See http://www.bennadel.com/blog/1566-Using-Super-Constructors-Is-C
 This also allows you to do things like require certain constructor parameters (throwing an error if they're absent).
 
 
-### Example 3 - Mixins / Multiple Inheritance ###
+### Example 3 - Mixins / multiple inheritance using the mixin function ###
+
+The mixin function is used under the hood by the extend function. All it does is copy properties.
+Unlike the extend function, it operates directly on the first argument passed to it, rather than calling
+Object.create and returning a new object. This also means no new prototype is created. 
 
 ```js
 
@@ -102,7 +106,11 @@ Employee.prototype = extend(Person, {
 var fred = new Person();
 
 //Fred is both a student and an employee
-fred = extend(fred, Student.prototype, Employee.prototype);
+
+mixin(fred, Student.prototype, Employee.prototype);
+
+//this is equivalent to:  fred = extend(fred, Student.prototype, Employee.prototype);
+//except that it operates on fred directly rather than creating a new object
 
 //only works in browsers supporting ECMAScript 5 or above
 //for older browsers you can try the non-standard fred.__proto__
@@ -120,21 +128,22 @@ log(fred instanceof Person); //true
 log(fred instanceof Employee); //false
 ```
 
-Note that the first parameter determines the prototype, which is why fred is an instance of
-Person but not Employee or Student. See the tip above.
-
-If fred was already a Student object, you could do this:
+Consider the situation where Fred was already a student:
 
 ```js
-fred = new Student();
-fred = extend(Person.prototype, fred, Employee.prototype);
+var fred = new Student();
+mixin(fred, Employee.prototype);
 ```
 
-We're passing Person.prototype as the first parameter because otherwise fred would be an instance of
-Student, but not an instance of Employee.
+Now we have a problem...
+
+```js
+console.log( fred instanceof Student ); //true
+console.log( fred instanceof Employee ); //false
+```
 
 In this type of situation it might be better to create the student and employee roles as simple trait
-objects:
+objects, and have Fred just be an instance of Person:
 
 ```js
 var studentTrait = {
@@ -146,13 +155,13 @@ var employeeTrait = {
 }
 
 var fred = new Person();
-fred = extend(fred, studentTrait, employeeTrait);
+mixin(fred, studentTrait, employeeTrait);
 
 //or if he started out as just a student...
-fred = extend(fred, studentTrait);
+mixin(fred, studentTrait);
 
-//and later became and employee, the syntax wouldn't change...
-fred = extend(fred, employeeTrait);
+//and later became and employee...
+mixin(fred, employeeTrait); 
 
 //you could still have a quick way of creating students (or employees) if that's something you needed to do a lot:
 function createStudent() {
@@ -161,4 +170,53 @@ function createStudent() {
 }
 
 var michelle = createStudent();
+```
+
+### Example 4 - Mixins / multiple inheritance with properties in addition to methods ###
+
+```js
+
+var mixin = simpleoo.mixin;
+
+function Person() {}
+
+Person.prototype.addRoles = function(role1 /*, role2, ... */) {
+	if (this.initRole) {
+		throw new Error("addRoles method doesn't work if an initRole method exists on the Person prototype");
+	}
+	for(var i = arguments.length - 1; i >= 0; --i) {
+		var role = arguments[i];
+		if (typeof role.initRole=='function') {
+			role.initRole.call(this);
+		}		
+		mixin(this, role);
+	}
+	delete this.initRole;
+};
+
+var studentRole = {
+	initRole: function() {
+		console.log('init student');
+		this.school = null;
+		this.numCourses = null;
+	},
+	study: function() {}
+}
+
+var employeeRole = {
+	initRole: function() {
+		console.log('init employee');
+		this.employer = null;
+	},
+	work: function() {}
+}
+
+var fred = new Person();
+fred.addRoles(studentRole, employeeRole);
+
+fred.school = fred.employer = "Cyberland College";
+fred.numCourses = 4;
+
+console.log(fred);
+
 ```
