@@ -31,6 +31,12 @@ http://requirejs.org/docs/whyamd.html
 
 It also works as a CommonJS module so you can use it as you would any other node.js module:
 
+```
+$ npm install simpleoo
+```
+
+Include the -g option if you want it to be available for all your node.js projects.
+
 ```js
 var simpleoo = require('simpleoo');
 var extend = simpleoo.extend;
