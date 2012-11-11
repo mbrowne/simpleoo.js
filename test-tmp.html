@@ -19,12 +19,15 @@ var deepCopy = simpleoo.deepCopy;
 function Pet(name) {
 	this.name = name || null;
 }
-Pet.prototype = createPrototype(Pet, {   
+/*
+Pet.prototype = extend(Pet.prototype, {
 	eat: function() { console.log('yum'); }
 });
-//instanceof will still work correctly without this, but this gives nicer output in the console;
-//if we do console.log(myPet) it will say 'Pet' instead of just 'Object'
-Pet.prototype.constructor = Pet;
+*/
+Pet.prototype = {
+    constructor: Pet,
+    eat: function() { console.log('yum'); }
+};
 
 var pet = new Pet('test');
 log(pet);
@@ -33,27 +36,14 @@ function Cat() {
 	Pet.apply(this, arguments);
 }
 
-Cat.prototype = extend(Pet.prototype, {
-    //constructor: Cat,
-    //This would be ignored...one might think that simpleoo
-    //could just assume that the constructor property on the last parameter should
-    //be the one to use, but that might not be a valid assumption, e.g.:
-    //
-    // function ZombieCat() {}
-    // ZombieCat.prototype = extend(Cat.prototype, Zombie.prototype);
-    //
-    //In this the constructor should be set to ZombieCat, not Zombie, as would happen
-    //if we used the constructor property of the last argument given (in this case Zombie.prototype) 
-    
-    //eat: function() { console.log('overridden eat'); },
+/*
+Cat.prototype = extend(Cat.prototype, Pet.prototype, {
     meow: function() { console.log('meow'); }   
 });
-Cat.prototype.constructor = Cat;
-
-Cat.prototype = createPrototype(Cat, Pet.prototype, {
-    meow: function() { console.log('meow'); }
+*/
+Cat.prototype = extend(Pet.prototype, {
+    meow: function() { console.log('meow'); }   
 });
-
 
 var garfield = new Cat('Garfield');
 

@@ -65,24 +65,66 @@ define([], function() {
             }
         }
         
+        //The user can set the constructor property correctly after calling this method if they want;
+        //since we have no way of knowing for sure what it should be, it's safer to set it to Object
+        //to avoid potential confusion (without this line the constructor property of the returned object
+        //would be always be the same as src1.constructor, which almost certainly wouldn't be correct)
+        //This issue is also discussed in the test.html file. 
+        result.constructor = Object;
+        
         return result;
     }
     
-    //Kudos to http://stackoverflow.com/questions/2261247/exactly-clone-an-object-in-javascript
+    /**
+     * 3 forms:
+     * createPrototype(ctor, newProps)
+     * 
+     * createPrototype(ctor, parentProto, newProps)
+     * 
+     * [NOT YET IMPLEMENTED:]
+     * createPrototype(ctor, parentProto, mixin1 [, mixin2, mixin3, ...], newProps)
+     */
+    function createPrototype(ctor /*, other arguments... */) {
+        /*
+        ctor.prototype = extend(parentProto, newProps);
+        ctor.prototype.constructor = ctor;
+        */
+        var proto;
+        var newProps = arguments[arguments.length-1];
+        if (arguments.length==2) {
+            proto = newProps;
+        }
+        else {
+            var parentProto = arguments[1];
+            proto = extend(parentProto, newProps);
+        }
+        proto.constructor = ctor;
+        return proto;
+    }
+    
+    /**
+     * Deep copy an object (make copies of all its object properties, sub-properties, etc.)
+     * 
+     * Based on http://stackoverflow.com/a/122190/560114
+     */ 
     function deepCopy(obj) {
-        if(obj == null || typeof(obj) != 'object'){
+        if(obj == null || typeof(obj) !== 'object'){
             return obj;
         }
-        var temp = object_create(obj);
+        //var ret = object_create(obj.constructor);
+        //ret.constructor = obj.constructor;
+        var ret = (typeof obj.constructor=='function' ? obj.constructor(): {});
+        
         for(var key in obj){
-            temp[key] = deepCopy(obj[key]);
+            ret[key] = deepCopy(obj[key]);
         }
-        return temp;
+        return ret;
     }
     
     return {
         mixin: mixin,
         extend: extend,
+        createPrototype: createPrototype,
         deepCopy: deepCopy
     }
 });

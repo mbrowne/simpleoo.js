@@ -67,7 +67,42 @@ console.log(garfield instanceof Cat); //true
 console.log(garfield instanceof Animal); //true
 ```
 
-### Example 2 - Calling a parent method ###
+### Example 2 - Alternative basic usage ###
+
+Using this method the prototype.constructor property is always set to the constructor passed as the
+first argument. This gives more useful debugging output in the console.
+
+The two forms currently supported are:
+createPrototype(ctor, newProperties)
+createPrototype(ctor, parentPrototype, newProperties)
+
+ctor stands for 'constructor'.
+
+Coming soon:
+createPrototype(ctor, parentPrototype, mixin1 [, mixin2, mixin3, ...], newProperties)
+
+```js
+var createPrototype = simpleoo.createPrototype;
+
+function Animal() {}
+Animal.prototype = createPrototype(Animal, {
+	eat: function() { console.log('yum'); }
+});
+
+function Cat() {}
+Cat.prototype = createPrototype(Cat, Animal.prototype, {
+   meow: function() { console.log('meow'); } 
+});
+
+var garfield = new Cat();
+console.log(garfield instanceof Cat); //true
+console.log(garfield instanceof Animal); //true
+
+console.log(new Animal());  //this will show 'Animal' in the console instead of just 'Object' as in the above example
+console.log(garfield);  //this will show 'Pet' in the console instead of just 'Object' as in the above example
+```
+
+### Example 3 - Calling a parent method ###
 
 Parent/super methods should be called just the way they would in traditional Javascript.
 
@@ -146,7 +181,7 @@ To be safe, simply don't put properties on the prototype at all - only use it fo
 For more details, see http://www.bennadel.com/blog/1566-Using-Super-Constructors-Is-Critical-In-Prototypal-Inheritance-In-Javascript.htm.
 
 
-### Example 3 - Mixins / multiple inheritance using the mixin function ###
+### Example 4 - Mixins / multiple inheritance using the mixin function ###
 
 The mixin function simply copies properties.
 Unlike the extend function, it operates directly on the first argument passed to it, rather than calling
@@ -243,7 +278,7 @@ function createStudent() {
 var michelle = createStudent();
 ```
 
-### Example 4 - Mixins / multiple inheritance with properties in addition to methods ###
+### Example 5 - Mixins / multiple inheritance with properties in addition to methods ###
 
 ```js
 
