@@ -80,6 +80,31 @@ properties. (See http://www.bennadel.com/blog/1566-Using-Super-Constructors-Is-C
 This also allows you to do things like require certain constructor parameters (throwing an error if they're absent).
 
 
+### Another tip ###
+
+This tip is really more general info about Javascript than it is something specific to simpleoo, but it's important... 
+
+While the internal usage of Object.create helps to some degree with the issue of unintended shared properties discussed above,
+it doesn't prevent you from making the common mistake of declaring object properties on the prototype:
+
+```js
+Animal.prototype.myArray = []; //Don't do this!
+```
+
+Instead, properties should be initialized in the constructor:
+
+```js
+function Animal() {
+	this.myArray = [];
+}
+```
+
+Any properties set on the prototype should either be set to simple literals like strings, numbers, booleans, or null.
+To be safe, simply don't put properties on the prototype at all - only use it for methods.
+
+For more details, see See http://www.bennadel.com/blog/1566-Using-Super-Constructors-Is-Critical-In-Prototypal-Inheritance-In-Javascript.htm.
+
+
 ### Example 3 - Mixins / multiple inheritance using the mixin function ###
 
 The mixin function simply copies properties.
@@ -202,6 +227,11 @@ Person.prototype.addRoles = function(role1 /*, role2, ... */) {
 var studentRole = {
 	initRole: function() {
 		console.log('init student');
+		
+		//It's important to define properties in some sort of init function rather than directly on the
+		//trait or role object, for the same reason that default values for object properties should be
+		//initialized in the constructor for regular "classes." See "Another tip" above.
+		
 		this.school = null;
 		this.numCourses = null;
 	},
