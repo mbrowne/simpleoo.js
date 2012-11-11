@@ -72,7 +72,7 @@ Cat.prototype = Object.create(Pet.prototype);
 
 The *first* argument passed to extend() will always be used to set the prototype of the object returned. 
 
-Using Object.create is superior to ```js Cat.prototype = new Pet();``` because it avoids calling the
+Using Object.create is superior to ```Cat.prototype = new Pet();``` because it avoids calling the
 Animal constructor, which helps you remember to call it yourself from the Cat constructor. Forgetting to call the
 parent constructor could otherwise result in some hard-to-find bugs due to unintended shared prototype
 properties. (See http://www.bennadel.com/blog/1566-Using-Super-Constructors-Is-Critical-In-Prototypal-Inheritance-In-Javascript.htm).
