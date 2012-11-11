@@ -3,6 +3,41 @@
 A simple utility to make prototypal inheritance in Javascript a bit easier, but staying
 as close to Javascript's built-in inheritance model as possible.
 
+## Set Up ##
+
+### Web browser: ###
+
+Use an AMD (asynchronous module definition) loader such as 'curl'
+(not to be confused with the command line network tool with the same name):
+https://github.com/cujojs/curl
+
+Assuming that curl.js and simpleoo.js are both in the same directory as the HTML file:
+
+```html
+<script src="curl.js"></script>
+<script>
+curl(['simpleoo'], function(simpleoo) {
+	var extend = simpleoo.extend;
+	//see below for usage...
+});
+</script>
+
+```
+
+To learn more about AMD, including the motivation for it, see:
+http://requirejs.org/docs/whyamd.html
+
+### node.js ###
+
+It also works as a CommonJS module so you can use it as you would any other node.js module:
+
+```js
+var simpleoo = require('simpleoo');
+var extend = simpleoo.extend;
+//see below for usage...
+```
+
+
 ## Examples & Notes ##
 
 ### Example 1 - Basic usage ###
