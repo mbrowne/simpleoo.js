@@ -68,9 +68,22 @@ define([], function() {
         return result;
     }
     
+    //Kudos to http://stackoverflow.com/questions/2261247/exactly-clone-an-object-in-javascript
+    function deepCopy(obj) {
+        if(obj == null || typeof(obj) != 'object'){
+            return obj;
+        }
+        var temp = object_create(obj);
+        for(var key in obj){
+            temp[key] = deepCopy(obj[key]);
+        }
+        return temp;
+    }
+    
     return {
         mixin: mixin,
-        extend: extend
+        extend: extend,
+        deepCopy: deepCopy
     }
 });
 })(typeof define != 'undefined' ? define : function(deps, factory) { module.exports = factory(); });
