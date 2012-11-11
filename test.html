@@ -78,4 +78,24 @@ log(fred instanceof Person); //true
 //and it was already set to Person.prototype  
 log(fred instanceof Employee); //false
 
+
+//Order of precedence
+
+var a = {x: 'a'};
+var b = {x: 'b'};
+var c = {x: 'c'};
+
+mixin(a, b, c);
+log(a.x); //c
+
+function A() {}
+A.prototype.x = 'a';
+function B() {}
+B.prototype = extend(A.prototype, {x: 'b'});
+function C() {}
+C.prototype = extend(B.prototype, {x: 'c'});
+
+var c = new C();
+log(c.x); //c
+
 </script>

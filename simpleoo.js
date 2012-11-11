@@ -14,6 +14,7 @@
 
    var garfield = new Cat();
    console.log(garfield instanceof Cat); //true
+   console.log(garfield instanceof Animal); //true
  */
 define([], function() {
 
@@ -29,15 +30,21 @@ define([], function() {
     }
     
     var emptyObject = {};
-
+    
+    //This method supports multiple mixins
     function mixin(dst, src1 /*, src2, src3, ... */) {
-        var src;
-        for(i = arguments.length - 1; i > 0; --i) {
-            src = arguments[i];
-            for(var s in src) {
-                if(src.hasOwnProperty(s) && !dst.hasOwnProperty(s) && !(s in emptyObject)) {
+        for(i = 0; i < arguments.length; i++) {
+            singleMixin(dst, arguments[i], true);
+        }
+        return dst;
+    }
+    
+    function singleMixin(dst, src, replaceExisting) {
+        if (typeof replaceExisting=='undefined') replaceExisting = false;
+        for(var s in src) {
+            if(src.hasOwnProperty(s) && !(s in emptyObject)) {
+                if (replaceExisting || !dst.hasOwnProperty(s))
                     dst[s] = src[s];
-                }
             }
         }
         return dst;
@@ -51,7 +58,7 @@ define([], function() {
         
         for(i = arguments.length - 1; i > 0; --i) {
             src = arguments[i];
-            result = mixin(result, src);
+            result = singleMixin(result, src);
 
             if(src.hasOwnProperty('toString') && typeof src.toString === 'function') {
                 result.toString = src.toString;
@@ -71,8 +78,7 @@ define([], function() {
     
     return {
         mixin: mixin,
-        extend: extend,
-        Base: Base
+        extend: extend
     }
 });
 })(typeof define != 'undefined' ? define : function(deps, factory) { module.exports = factory(); });

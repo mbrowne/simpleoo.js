@@ -21,7 +21,7 @@ Person.prototype.addRoles = function(role1 /*, role2, ... */) {
 	if (this.initRole) {
 		throw new Error("addRoles method doesn't work if an initRole method exists on the Person prototype");
 	}
-	for(var i = arguments.length - 1; i >= 0; --i) {
+	for(var i in arguments) {
 		var role = arguments[i];
 		if (typeof role.initRole=='function') {
 			role.initRole.call(this);
@@ -37,7 +37,7 @@ var studentRole = {
 		this.school = null;
 		this.numCourses = null;
 	},
-	study: function() {}
+	study: function() { log('study'); },
 }
 
 var employeeRole = {
@@ -45,7 +45,7 @@ var employeeRole = {
 		console.log('init employee');
 		this.employer = null;
 	},
-	work: function() {}
+	work: function() { log('work'); }
 }
 
 var fred = new Person();
@@ -53,6 +53,8 @@ fred.addRoles(studentRole, employeeRole);
 
 fred.school = fred.employer = "Cyberland College";
 fred.numCourses = 4;
+
+fred.work();
 
 console.log(fred);
 

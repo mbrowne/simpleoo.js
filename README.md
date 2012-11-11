@@ -82,9 +82,14 @@ This also allows you to do things like require certain constructor parameters (t
 
 ### Example 3 - Mixins / multiple inheritance using the mixin function ###
 
-The mixin function is used under the hood by the extend function. All it does is copy properties.
+The mixin function simply copies properties.
 Unlike the extend function, it operates directly on the first argument passed to it, rather than calling
-Object.create and returning a new object. This also means no new prototype is created. 
+Object.create and returning a new object. This also means no new prototype is created.
+
+To be clear, extend() will return a *new* object whereas mixin() returns the *same* object given
+(after adding new members to it of course).
+
+With both the extend function and the mixin function, later arguments override earlier arguments if there are members with the same name.
 
 ```js
 
@@ -184,7 +189,7 @@ Person.prototype.addRoles = function(role1 /*, role2, ... */) {
 	if (this.initRole) {
 		throw new Error("addRoles method doesn't work if an initRole method exists on the Person prototype");
 	}
-	for(var i = arguments.length - 1; i >= 0; --i) {
+	for(var i in arguments) {
 		var role = arguments[i];
 		if (typeof role.initRole=='function') {
 			role.initRole.call(this);
