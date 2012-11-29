@@ -2,6 +2,9 @@
 /*
    Example usage:
    
+   var makePrototype = simpleoo.makePrototype;
+   var extend = simpleoo.extend;
+   
    function Animal() {}
    Animal.prototype = makePrototype(Animal, {
         eat: function() { console.log('yum'); }
@@ -41,10 +44,23 @@ define([], function() {
     
     function singleMixin(dst, src, replaceExisting) {
         if (typeof replaceExisting=='undefined') replaceExisting = false;
-        for(var s in src) {
-            if(src.hasOwnProperty(s) && !(s in emptyObject)) {
-                if (replaceExisting || !dst.hasOwnProperty(s))
-                    dst[s] = src[s];
+        if (Object.getOwnPropertyNames && Object.defineProperty && Object.getOwnPropertyDescriptor) {
+            //If the environment supports ES5 (or if an ES5 shim has been loaded),
+            //use defineProperty rather than simple assignment in order to preserve
+            //property attributes such as enumerability
+            //Kudos to http://www.2ality.com/2012/01/js-inheritance-by-example.html
+            Object.getOwnPropertyNames(src)
+            .forEach(function(propName) {
+                Object.defineProperty(dst, propName,
+                    Object.getOwnPropertyDescriptor(src, propName));
+            });
+        }
+        else {
+            for(var s in src) {
+                if(src.hasOwnProperty(s) && !(s in emptyObject)) {
+                    if (replaceExisting || !dst.hasOwnProperty(s))
+                        dst[s] = src[s];
+                }
             }
         }
         return dst;
@@ -59,7 +75,7 @@ define([], function() {
         for(i = arguments.length - 1; i > 0; --i) {
             src = arguments[i];
             result = singleMixin(result, src);
-
+            
             if(src.hasOwnProperty('toString') && typeof src.toString === 'function') {
                 result.toString = src.toString;
             }
@@ -96,15 +112,46 @@ define([], function() {
      * Deep copy an object (make copies of all its object properties, sub-properties, etc.)
      * An improved version of http://keithdevens.com/weblog/archive/2007/Jun/07/javascript.clone
      * that doesn't break if the constructor has required parameters
+     * 
+     * It also borrows some code from http://stackoverflow.com/a/11621004/560114
      */ 
-    function deepCopy(obj) {
-        if(obj == null || typeof(obj) !== 'object'){
-            return obj;
+    function deepCopy(src) {
+        if(src == null || typeof(src) !== 'object'){
+            return src;
         }
+        
+        //Honor native/custom clone methods
+        if(typeof src.clone == 'function'){
+            return src.clone(true);
+        }
+        
+        //Special cases:
+        //Date
+        if (src instanceof Date){
+            return new Date(src.getTime());
+        }
+        //RegExp
+        if(src instanceof RegExp){
+            return new RegExp(src);
+        }
+        //DOM Elements
+        if(src.nodeType && typeof src.cloneNode == 'function'){
+            return src.cloneNode(deep);
+        }
+        
+        //If we've reached here, we have a regular object, array, or function
+        
         //make sure the returned object has the same prototype as the original
-        var ret = object_create(obj.constructor.prototype);
-        for(var key in obj){
-            ret[key] = deepCopy(obj[key]);
+        var proto = (Object.getPrototypeOf ? Object.getPrototypeOf(src): src.__proto__);
+        if (!proto) {
+            proto = src.constructor.prototype; //this line would probably only be reached by very old browsers 
+        }
+        var ret = object_create(proto);
+        
+        for(var key in src){
+            //Note: this does NOT preserve ES5 property attributes like 'writable', 'enumerable', etc.
+            //For an example of how this could be modified to do so, see the singleMixin() function
+            ret[key] = deepCopy(src[key]);
         }
         return ret;
     }

@@ -13,6 +13,11 @@ function Symbol(internalName, isPrivate) {
 }
 Symbol.prototype.toString = function() {
     var ret = secret + this.internalName;
+    
+    //MAY NOT WANT TO AUTOMATICALLY SUPPORT OLDER BROWSERS...FOR THIS EXAMPLE, WE DON'T WANT THEM TO BE ABLE TO MODIFY THEIR
+    //SCORE...SO IF THERE'S A WAY TO MAKE IT FOOLPROOF ON ES5 BUT NOT EARLIER, THEN THERE SHOULD BE AN OPTION TO *NOT*'
+    //SUPPORT IT ON OLDER BROWSERS
+    
     //start with _private so that older browsers that don't support Object.defineProperty to create non-enumerable properties
     //will still see a clear indication that the property is private
     if (!Object.defineProperty) return '_private_' + ret;

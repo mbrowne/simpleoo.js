@@ -43,13 +43,13 @@ var extend = simpleoo.extend;
 //see below for usage...
 ```
 
-## [API](simpleoo.js/wiki/api) ##
+## [API](https://github.com/mbrowne/simpleoo.js/wiki/api) ##
 
 Note: It's highly recommended to read at least the first two examples before reading the API.
 
 Here's the link:
 
-**[API](simpleoo.js/wiki/api)**
+**[API](https://github.com/mbrowne/simpleoo.js/wiki/api)**
 
 
 ## Examples & Notes ##
@@ -78,7 +78,8 @@ console.log(garfield instanceof Animal); //true
 ### Example 2 - Alternative basic usage ###
 
 Using this method the prototype.constructor property is always set to the constructor passed as the
-first argument. This gives more useful debugging output in the console.
+first argument. This gives more useful debugging output in the console, and may have
+[other advantages](http://www.2ality.com/2011/06/constructor-property.html) as well.
 
 The method signature is as follows:
 	makePrototype(ctor, prototypeDefinition)
@@ -292,10 +293,10 @@ on the subject. The author discusses mixins in Python but many of his ideas are 
 http://www.artima.com/weblogs/viewpost.jsp?thread=246341
 
 
-### [Additional Examples](simpleoo.js/wiki/Additional_Examples) ###
+### [Additional Examples](https://github.com/mbrowne/simpleoo.js/wiki/Additional-Examples) ###
 
 The above examples cover the core features of simpleoo.js, which, indeed, is a deliberately minimal and simple library.
-One thing it doesn't cover is the `deepCopy()` function, which is documented [here](wiki/Additional_Examples#deepCopy). 
+One thing it doesn't cover is the `deepCopy()` function, which is documented [here](https://github.com/mbrowne/simpleoo.js/wiki/Additional-Examples#deepCopy). 
 
 There are also several other examples, including a follow-up on the above example that shows how to do
 mixins with properties in addition to methods.
@@ -305,10 +306,10 @@ in particular (actually, that's what some of the above is about as well).
 However, since simpleOO stays so close to native Javascript, and basic desmonstration of the API only goes so
 far to show intended usage, you may find the additional examples to be quite helpful.
 
-**[View Additional Examples](simpleoo.js/wiki/Additional-Examples)**
+**[View Additional Examples](https://github.com/mbrowne/simpleoo.js/wiki/Additional-Examples)**
 
 
-<a id="makePrototypeExplanation"></a>
+<a name="makePrototypeExplanation"></a>
 ### Explanation / Rationale for makePrototype() function ###
 
 makePrototype does only one thing: it assigns the constructor property on the prototype.
@@ -390,4 +391,4 @@ The name `makePrototype` is not quite accurate because its second parameter coul
 without modification (Javascript allows you to set any object as the prototype), but it conveys the purpose of the method
 pretty well, which is to return a prototype fully ready for use (assuming you care about having the constructor property
 set correctly in the first place, which is generally only useful for debugging, although it's potentially useful for other
-things as well, like being able to deep-copy [clone] your objects accurately / exactly).
+things as well (see http://www.2ality.com/2011/06/constructor-property.html).
