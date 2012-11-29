@@ -43,13 +43,13 @@ var extend = simpleoo.extend;
 //see below for usage...
 ```
 
-## [API](simpleoo.js/wiki/api) ##
+## [API](https://github.com/mbrowne/simpleoo.js/wiki/api) ##
 
 Note: It's highly recommended to read at least the first two examples before reading the API.
 
 Here's the link:
 
-**[API](simpleoo.js/wiki/api)**
+**[API](https://github.com/mbrowne/simpleoo.js/wiki/api)**
 
 
 ## Examples & Notes ##
@@ -292,7 +292,7 @@ on the subject. The author discusses mixins in Python but many of his ideas are 
 http://www.artima.com/weblogs/viewpost.jsp?thread=246341
 
 
-### [Additional Examples](simpleoo.js/wiki/Additional_Examples) ###
+### [Additional Examples](https://github.com/mbrowne/simpleoo.js/wiki/Additional_Examples) ###
 
 The above examples cover the core features of simpleoo.js, which, indeed, is a deliberately minimal and simple library.
 One thing it doesn't cover is the `deepCopy()` function, which is documented [here](wiki/Additional_Examples#deepCopy). 
@@ -305,7 +305,7 @@ in particular (actually, that's what some of the above is about as well).
 However, since simpleOO stays so close to native Javascript, and basic desmonstration of the API only goes so
 far to show intended usage, you may find the additional examples to be quite helpful.
 
-**[View Additional Examples](simpleoo.js/wiki/Additional-Examples)**
+**[View Additional Examples](https://github.com/mbrowne/simpleoo.js/wiki/Additional-Examples)**
 
 
 <a name="makePrototypeExplanation"></a>
