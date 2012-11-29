@@ -3,14 +3,14 @@
    Example usage:
    
    function Animal() {}
-   Animal.prototype = {
+   Animal.prototype = makePrototype(Animal, {
         eat: function() { console.log('yum'); }
-   };
+   });
    
    function Cat() {}
-   Cat.prototype = extend(Animal.prototype, {
+   Cat.prototype = makePrototype(Cat, extend(Animal.prototype, {
        meow: function() { console.log('meow'); } 
-   })
+   }));
 
    var garfield = new Cat();
    console.log(garfield instanceof Cat); //true
@@ -76,26 +76,21 @@ define([], function() {
     }
     
     /**
-     * 3 forms:
-     * createPrototype(ctor, mixin)
-     * createPrototype(ctor, parentProto, mixin1)
-     * 
-     * [NOT YET IMPLEMENTED:]
-     * createPrototype(ctor, parentProto, mixin1 [, mixin2, mixin3, ...])
+     * A helper to make a prototype that has its constructor property set correctly.
+     * This establishes a standard way of setting the constructor property, since the use of the
+     * extend function by itself means that you can only set the constructor property *after*
+     * running the extend function, which might be confusing (see note above).
+     *
+     * The second parameter can be any object, including an object returned by the extend function, e.g.
+     *
+     * Cat.prototype = makePrototype(Cat, extend(Animal, {
+     *		meow: function() {}
+     * }));
      */
-    function createPrototype(ctor /*, other arguments... */) {
-        var proto;
-        var newProps = arguments[arguments.length-1];
-        if (arguments.length==2) {
-            proto = newProps;
-        }
-        else {
-            var parentProto = arguments[1];
-            proto = extend(parentProto, newProps);
-        }
-        proto.constructor = ctor;
-        return proto;
-    }
+	function makePrototype(ctor, def) {
+		def.constructor = ctor;
+		return def;
+	}
     
     /**
      * Deep copy an object (make copies of all its object properties, sub-properties, etc.)
@@ -117,7 +112,7 @@ define([], function() {
     return {
         mixin: mixin,
         extend: extend,
-        createPrototype: createPrototype,
+        makePrototype: makePrototype,
         deepCopy: deepCopy
     }
 });

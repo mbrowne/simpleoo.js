@@ -1,0 +1,56 @@
+<script>
+//http://tc39wiki.calculist.org/es6/symbols/
+
+(function() {
+"use strict";
+
+var secret = 'secret code';
+
+var isOlderBrowser = false;
+
+function Symbol(internalName, isPrivate) {
+    this.internalName = internalName;
+}
+Symbol.prototype.toString = function() {
+    var ret = secret + this.internalName;
+    //start with _private so that older browsers that don't support Object.defineProperty to create non-enumerable properties
+    //will still see a clear indication that the property is private
+    if (!Object.defineProperty) return '_private_' + ret;
+    return ret;
+}
+
+var score = new Symbol('score', true);
+
+function definePrivateProperty(obj, propName, defaultVal) {
+    if (defaultVal == undefined) defaultVal = null;
+    //the property will not be enumerable or configurable, since those
+    //default to false
+    Object.defineProperty(obj, secret + propName, {value:defaultVal, writable:true});
+}
+
+window.Player = function Player() {
+    definePrivateProperty(this, 'score');
+    
+    this[score] = 0;    
+    increaseScore(this, 1);
+}
+
+Player.prototype.getScore = function() {
+    return this[score];
+}
+
+function increaseScore(player, n) {
+    player[score] += n;
+}
+
+})();
+
+var log = console.log;
+var player = new Player();
+log(player.getScore());
+log(player.score);
+
+log(player);
+
+
+</script>

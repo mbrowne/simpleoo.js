@@ -43,6 +43,14 @@ var extend = simpleoo.extend;
 //see below for usage...
 ```
 
+### [API](wiki/API) ###
+
+Note: It's highly recommended to read at least the first two examples before reading the API.
+
+Here's the link:
+
+[API](wiki/API)
+
 
 ## Examples & Notes ##
 
@@ -72,27 +80,22 @@ console.log(garfield instanceof Animal); //true
 Using this method the prototype.constructor property is always set to the constructor passed as the
 first argument. This gives more useful debugging output in the console.
 
-The two forms currently supported are:
-createPrototype(ctor, mixin)
-createPrototype(ctor, parentPrototype, mixin)
+The method signature is as follows:
+	makePrototype(ctor, prototypeDefinition)
 
 ctor stands for 'constructor'.
+prototypeDefinition is an object that could actually be used as a prototype in its own right;
+the usefulness of the makePrototype method is that it sets the constructor property appropriately
+for you, saving a step (see [explanation](#makePrototypeExplanation)).  
 
-Coming soon:
-createPrototype(ctor, parentPrototype, mixin1 [, mixin2, mixin3, ...])
-
-```js
-var createPrototype = simpleoo.createPrototype;
-
-function Animal() {}
-Animal.prototype = createPrototype(Animal, {
+```
+Animal.prototype = makePrototype(Animal, {
 	eat: function() { console.log('yum'); }
 });
 
-function Cat() {}
-Cat.prototype = createPrototype(Cat, Animal.prototype, {
-   meow: function() { console.log('meow'); } 
-});
+Cat.prototype = makePrototype( Cat, extend(Animal.prototype, {
+	meow: function() { console.log('meow'); }
+}) );
 
 var garfield = new Cat();
 console.log(garfield instanceof Cat); //true
@@ -149,7 +152,10 @@ Cat.prototype = Object.create(Pet.prototype);
 The *first* argument passed to extend() will always be used to set the prototype of the object returned. 
 
 Using Object.create is superior to ```Cat.prototype = new Pet();``` because it avoids calling the
-Pet constructor, which helps you remember to call it yourself from the Cat constructor. Forgetting to call the
+Pet constructor, which helps you remember to call it yourself from the Cat constructor (if you don't call it,
+all of the properties that would have been created by calling `new Pet()` will be `undefined` instead).
+
+Forgetting to call the
 parent constructor could otherwise result in some hard-to-find bugs due to unintended shared prototype
 properties. (See http://www.bennadel.com/blog/1566-Using-Super-Constructors-Is-Critical-In-Prototypal-Inheritance-In-Javascript.htm).
 
@@ -158,7 +164,7 @@ This also allows you to do things like require certain constructor parameters (t
 
 ### Another tip ###
 
-This tip is really more general info about Javascript than it is something specific to simpleoo, but it's important... 
+This tip is really more general info about Javascript than it is something specific to simpleOO, but it's important... 
 
 While the internal usage of Object.create helps to some degree with the issue of unintended shared properties discussed above,
 it doesn't prevent you from making the common mistake of declaring object properties on the prototype:
@@ -278,56 +284,108 @@ function createStudent() {
 var michelle = createStudent();
 ```
 
-### Example 5 - Mixins / multiple inheritance with properties in addition to methods ###
+Although mixins are certainly one of the cool features of Javascript that sets it apart from languages like Java or PHP,
+it's quite possible to overuse them or use them inappropriately. The following link considers mixins rather unfavorably,
+and so should be contrasted with other articles about mixins and their usefulness, but it offers some good food for thought
+on the subject. The author discusses mixins in Python but many of his ideas are arguably applicable to Javascript as well:
 
-```js
+http://www.artima.com/weblogs/viewpost.jsp?thread=246341
 
-var mixin = simpleoo.mixin;
 
-function Person() {}
+### [Additional Examples](wiki/Additional_Examples) ###
 
-Person.prototype.addRoles = function(role1 /*, role2, ... */) {
-	if (this.initRole) {
-		throw new Error("addRoles method doesn't work if an initRole method exists on the Person prototype");
-	}
-	for(var i in arguments) {
-		var role = arguments[i];
-		if (typeof role.initRole=='function') {
-			role.initRole.call(this);
-		}		
-		mixin(this, role);
-	}
-	delete this.initRole;
-};
+The above examples cover the core features of simpleoo.js, which, indeed, is a deliberately minimal and simple library.
+One thing it doesn't cover is the `deepCopy()` function, which is documented [here](wiki/Additional_Examples#deepCopy). 
 
-var studentRole = {
-	initRole: function() {
-		console.log('init student');
-		
-		//It's important to define properties in some sort of init function rather than directly on the
-		//trait or role object, for the same reason that default values for object properties should be
-		//initialized in the constructor for regular "classes." See "Another tip" above.
-		
-		this.school = null;
-		this.numCourses = null;
-	},
-	study: function() {}
-}
+There are also several other examples, including a follow-up on the above example that shows how to do
+mixins with properties in addition to methods.
 
-var employeeRole = {
-	initRole: function() {
-		console.log('init employee');
-		this.employer = null;
-	},
-	work: function() {}
-}
+These additional examples really have more to do with general OOP in Javascript than with simpleOO
+in particular (actually, that's what some of the above is about as well).
+However, since simpleOO stays so close to native Javascript, and basic desmonstration of the API only goes so
+far to show intended usage, you may find the additional examples to be quite helpful.
 
-var fred = new Person();
-fred.addRoles(studentRole, employeeRole);
+[View Additional Examples](wiki/Additional_Examples)
 
-fred.school = fred.employer = "Cyberland College";
-fred.numCourses = 4;
 
-console.log(fred);
+<h3 id="makePrototypeExplanation">Explanation / Rationale for makePrototype() function</h3>
+makePrototype does only one thing: it assigns the constructor property on the prototype.
+
+So, modifying the first example slightly for illustration purposes, if you run:
+	var def = {
+		eat: function() { console.log('yum'); }
+	};
+	Animal.prototype = makePrototype(Animal, def);
+
+the last line is equivalent to:
+	Animal.prototype = def;
+	def.constructor = Animal;
+
+Although this may at first seem minimally helpful or nearly pointless, it actually
+significantly improves code consistency and avoids confusion. 
+
+Why? Because of the way the `extend` method works.
+
+The `extend` method deals only with objects, and is not aware of any constructor functions that might be involved.
+
+Therefore, it can't know for certain how the constructor property should be set on the object returned, so it
+always sets its constructor property to `Object`. It's important that `extend` does this rather than simply leaving
+the object alone, because otherwise the constructor property would always be the same as the constructor property of
+the first parameter passed to `extend`, e.g.:
+	Cat.prototype.constructor == Animal;  //true, not good!
+
+Instead, the `extend` method behaves as follows:
 
 ```
+Cat.prototype = extend(Animal.prototype, {...});
+Cat.prototype.constructor == Object;  //true 
+```
+
+This is better, but what we actually want is:
+	Cat.prototype.constructor == Cat
+
+To accomplish this, we could try to set the constructor property ourselves, but would quickly encounter inconsistencies:
+
+```
+function Animal() {}
+Animal.prototype.eat = function();
+Animal.prototype.constructor == Animal; //true;
+
+Animal.prototype = {
+	constructor: Animal,
+	eat: function()
+};
+Animal.prototype.constructor == Animal; //true;
+
+function Cat() {}
+Cat.prototype = extend(Animal, {
+	constructor: Cat,
+	meow: function() {}
+});
+
+Cat.prototype.constructor == Cat;  // FALSE!
+
+Cat.prototype.constructor == Object; //true, because extend() always sets the constructor property to Object
+
+Cat.prototype.constructor = Cat;
+//We have now solved the problem, but now we now have to remember to use a different approach when extending an object
+//versus creating a "class" with no parent. 
+```
+
+In contrast, when we use `makePrototype`, we have one consistent approach that always works, and saves a bit of typing to boot:
+
+```
+Animal.prototype = makePrototype(Animal, {
+	eat: function() {}
+});
+
+Cat.prototype = makePrototype( Cat, extend(Animal.prototype, {
+	meow: function() {}
+}) );
+```
+
+The name `makePrototype` is not quite accurate because its second parameter could actually be used as a prototype
+without modification (Javascript allows you to set any object as the prototype), but it conveys the purpose of the method
+pretty well, which is to return a prototype fully ready for use (assuming you care about having the constructor property
+set correctly in the first place, which is generally only useful for debugging, although it's potentially useful for other
+things as well, like being able to deep-copy [clone] your objects accurately / exactly).
