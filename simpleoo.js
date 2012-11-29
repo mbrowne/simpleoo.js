@@ -103,10 +103,10 @@ define([], function() {
      *		meow: function() {}
      * }));
      */
-	function makePrototype(ctor, def) {
-		def.constructor = ctor;
-		return def;
-	}
+    function makePrototype(ctor, def) {
+        def.constructor = ctor;
+        return def;
+    }
     
     /**
      * Deep copy an object (make copies of all its object properties, sub-properties, etc.)

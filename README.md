@@ -310,7 +310,7 @@ far to show intended usage, you may find the additional examples to be quite hel
 
 
 <a name="makePrototypeExplanation"></a>
-### Explanation / Rationale for makePrototype() function ###
+### Explanation / Rationale for the makePrototype() function ###
 
 makePrototype does only one thing: it assigns the constructor property on the prototype.
 
@@ -335,7 +335,9 @@ Therefore, it can't know for certain how the constructor property should be set 
 always sets its constructor property to `Object`. It's important that `extend` does this rather than simply leaving
 the object alone, because otherwise the constructor property would always be the same as the constructor property of
 the first parameter passed to `extend`, e.g.:
-	Cat.prototype.constructor == Animal;  //true, not good!
+```
+Cat.prototype.constructor == Animal;  //true, not good!
+```
 
 Instead, the `extend` method behaves as follows:
 
@@ -345,7 +347,9 @@ Cat.prototype.constructor == Object;  //true
 ```
 
 This is better, but what we actually want is:
-	Cat.prototype.constructor == Cat
+```
+Cat.prototype.constructor == Cat
+```
 
 To accomplish this, we could try to set the constructor property ourselves, but would quickly encounter inconsistencies:
 
