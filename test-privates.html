@@ -1,4 +1,22 @@
 <script>
+
+//This is just for the purposes of this test file; in a real application you should use an AMD loader
+//such as this: https://github.com/cujojs/curl
+var simpleoo;
+function define(dependencies, definition) {
+    simpleoo = definition();
+}
+
+</script>
+<script src="simpleoo.js"></script>
+<script>
+
+var log = console.log;
+var extend = simpleoo.extend;
+var mixin = simpleoo.mixin;
+var deepCopy = simpleoo.deepCopy;
+
+
 //http://tc39wiki.calculist.org/es6/symbols/
 
 (function() {
@@ -23,6 +41,15 @@ Symbol.prototype.toString = function() {
     if (!Object.defineProperty) return '_private_' + ret;
     return ret;
 }
+
+function PrivateProperty(obj, name) {
+    this.name = name;
+    
+    //We might not need this, but we should have some way of checking to see if the property was actually added to the
+    //object using defineProperty before allowing it to be used
+    this.initialized = false;
+}
+PrivateProperty.prototype = makePrototype(PrivateProperty, extend(Symbol.prototype));
 
 var score = new Symbol('score', true);
 
