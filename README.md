@@ -305,10 +305,12 @@ in particular (actually, that's what some of the above is about as well).
 However, since simpleOO stays so close to native Javascript, and basic desmonstration of the API only goes so
 far to show intended usage, you may find the additional examples to be quite helpful.
 
-**[View Additional Examples](simpleoo.js/wiki/Additional_Examples)**
+**[View Additional Examples](simpleoo.js/wiki/Additional-Examples)**
 
 
-<h3 id="makePrototypeExplanation">Explanation / Rationale for makePrototype() function</h3>
+<a id="makePrototypeExplanation"></a>
+### Explanation / Rationale for makePrototype() function ###
+
 makePrototype does only one thing: it assigns the constructor property on the prototype.
 
 So, modifying the first example slightly for illustration purposes, if you run:
