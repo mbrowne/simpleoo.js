@@ -43,13 +43,13 @@ var extend = simpleoo.extend;
 //see below for usage...
 ```
 
-### [API](wiki/API) ###
+## [API](simpleoo.js/wiki/api) ##
 
 Note: It's highly recommended to read at least the first two examples before reading the API.
 
 Here's the link:
 
-[API](wiki/API)
+**[API](simpleoo.js/wiki/api)**
 
 
 ## Examples & Notes ##
