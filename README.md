@@ -295,7 +295,7 @@ http://www.artima.com/weblogs/viewpost.jsp?thread=246341
 ### [Additional Examples](https://github.com/mbrowne/simpleoo.js/wiki/Additional-Examples) ###
 
 The above examples cover the core features of simpleoo.js, which, indeed, is a deliberately minimal and simple library.
-One thing it doesn't cover is the `deepCopy()` function, which is documented [here](wiki/Additional-Examples#deepCopy). 
+One thing it doesn't cover is the `deepCopy()` function, which is documented [here](https://github.com/mbrowne/simpleoo.js/wiki/Additional-Examples#deepCopy). 
 
 There are also several other examples, including a follow-up on the above example that shows how to do
 mixins with properties in addition to methods.
