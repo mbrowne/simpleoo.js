@@ -308,7 +308,7 @@ far to show intended usage, you may find the additional examples to be quite hel
 **[View Additional Examples](simpleoo.js/wiki/Additional-Examples)**
 
 
-<a id="makePrototypeExplanation"></a>
+<a name="makePrototypeExplanation"></a>
 ### Explanation / Rationale for makePrototype() function ###
 
 makePrototype does only one thing: it assigns the constructor property on the prototype.
