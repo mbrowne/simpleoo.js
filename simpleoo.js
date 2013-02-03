@@ -136,7 +136,7 @@ define([], function() {
         }
         //DOM Elements
         if(src.nodeType && typeof src.cloneNode == 'function'){
-            return src.cloneNode(deep);
+            return src.cloneNode(true);
         }
         
         //If we've reached here, we have a regular object, array, or function
