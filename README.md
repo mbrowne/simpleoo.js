@@ -290,7 +290,7 @@ it's quite possible to overuse them or use them inappropriately. The following l
 and so should be contrasted with other articles about mixins and their usefulness, but it offers some good food for thought
 on the subject. The author discusses mixins in Python but many of his ideas are arguably applicable to Javascript as well:
 
-http://www.artima.com/weblogs/viewpost.jsp?thread=246341
+http://www.artima.com/weblogs/viewpost.jsp?thread=246483
 
 
 ### [Additional Examples](https://github.com/mbrowne/simpleoo.js/wiki/Additional-Examples) ###
