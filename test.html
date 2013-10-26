@@ -122,4 +122,16 @@ log(c.x); //c
 var garfieldClone = deepCopy(garfield);
 log(garfieldClone);
 
+// deepCopy cyclic
+var copyme = {};
+var child = {};
+var grandchild = {};
+child.parent = null;
+child.child = grandchild;
+grandchild.parent = child;
+grandchild.child = null;
+copyme.thing = child;
+log(copyme);
+log(deepCopy(copyme));
+
 </script>
