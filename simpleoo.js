@@ -31,6 +31,30 @@ define([], function() {
             return new F();
         };
     }
+	
+	var supportsES5 = null;
+	/**
+	 * Returns whether the browser supports ES5 Object functions
+	 * @returns bool
+	 */
+	function browserSupportsES5() {
+		if (supportsES5 === null) {			
+			//If the environment supports ES5 (or if an ES5 shim has been loaded),
+			//use defineProperty rather than simple assignment in order to preserve
+			//property attributes such as 'writable' and 'configurable'.
+			//In ES5 environments, it can mix in non-enumerable properties.
+			if (Object.defineProperty) {			
+				//test it to make sure it's ES5-compliant
+				var obj = {};
+				try {
+					Object.defineProperty(obj, 'x', {});
+				}
+				catch (e) {}
+				supportsES5 = ('x' in obj) && Object.getOwnPropertyNames && Object.getOwnPropertyDescriptor;
+			}
+		}
+		return supportsES5;
+	}
     
     var emptyObject = {};
     
@@ -43,23 +67,33 @@ define([], function() {
     }
     
     function singleMixin(dst, src, replaceExisting) {
-        if (typeof replaceExisting=='undefined') replaceExisting = false;
-        if (Object.getOwnPropertyNames && Object.defineProperty && Object.getOwnPropertyDescriptor) {
+		if (typeof replaceExisting=='undefined') replaceExisting = false;
+		if (browserSupportsES5()) {
             //If the environment supports ES5 (or if an ES5 shim has been loaded),
             //use defineProperty rather than simple assignment in order to preserve
             //property attributes such as enumerability
             //Kudos to http://www.2ality.com/2012/01/js-inheritance-by-example.html
+			
+            var dstIsFunction = (typeof dst == 'function');
+            
             Object.getOwnPropertyNames(src)
             .forEach(function(propName) {
-                Object.defineProperty(dst, propName,
-                    Object.getOwnPropertyDescriptor(src, propName));
+            	if (!(propName in emptyObject)) {
+            		if ((!dstIsFunction || !(propName in Function)) &&
+						(replaceExisting || !dst.hasOwnProperty(propName)))
+					{	
+						Object.defineProperty(dst, propName,
+							Object.getOwnPropertyDescriptor(src, propName)
+						);
+					}
+				}
             });
         }
         else {
             for(var s in src) {
                 if(src.hasOwnProperty(s) && !(s in emptyObject)) {
                     if (replaceExisting || !dst.hasOwnProperty(s))
-                        dst[s] = src[s];
+						dst[s] = src[s];
                 }
             }
         }
