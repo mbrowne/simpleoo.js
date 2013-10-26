@@ -115,10 +115,27 @@ define([], function() {
      * 
      * It also borrows some code from http://stackoverflow.com/a/11621004/560114
      */ 
-    function deepCopy(src) {
+    function deepCopy(src, visited) {
         if(src == null || typeof(src) !== 'object'){
             return src;
         }
+
+        // Initialize the visited objects array if needed
+        if(visited == null){
+            visited = [];
+        }
+        // Otherwise, ensure src has not already been visited
+        else {
+            for (var i = 0; i < visited.length; i++) {
+                // If src was already visited, don't try to copy it, just return the reference
+                if (src === visited[i]) {
+                    return src;
+                } 
+            } 
+        }
+
+        // Add this object to the visited array
+        visited.push(src);
         
         //Honor native/custom clone methods
         if(typeof src.clone == 'function'){
@@ -151,7 +168,7 @@ define([], function() {
         for(var key in src){
             //Note: this does NOT preserve ES5 property attributes like 'writable', 'enumerable', etc.
             //For an example of how this could be modified to do so, see the singleMixin() function
-            ret[key] = deepCopy(src[key]);
+            ret[key] = deepCopy(src[key], visited);
         }
         return ret;
     }
