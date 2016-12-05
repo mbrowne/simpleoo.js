@@ -178,7 +178,7 @@ define([], function() {
             ret = src.slice();
             var i = ret.length;
             while (i--){
-                ret[i] = deepCopy(ret[i], _visited);
+                ret[i] = deepCopy(ret[i], null, _visited, _copiesVisited);
             }
             return ret;
         }
