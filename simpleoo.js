@@ -168,9 +168,19 @@ define([], function() {
         if(src instanceof RegExp){
             return new RegExp(src);
         }
-        //DOM Elements
+        //DOM Element
         if(src.nodeType && typeof src.cloneNode == 'function'){
             return src.cloneNode(true);
+        }
+        //Array
+        if (Object.prototype.toString.call(src) == '[object Array]') {
+            //[].slice(0) would soft clone
+            ret = src.slice();
+            var i = ret.length;
+            while (i--){
+            	ret[i] = deepCopy(ret[i], _visited);
+            }
+            return ret;
         }
         
         //If we've reached here, we have a regular object, array, or function
