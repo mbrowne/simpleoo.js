@@ -178,7 +178,7 @@ define([], function() {
             ret = src.slice();
             var i = ret.length;
             while (i--){
-            	ret[i] = deepCopy(ret[i], _visited);
+                ret[i] = deepCopy(ret[i], _visited);
             }
             return ret;
         }
@@ -211,9 +211,9 @@ define([], function() {
             var val, copy;
             val = src[key];
             if (val === null || typeof val !== 'object') {
-				_dest[key] = val;
+                _dest[key] = val;
                 continue;
-			}
+            }
             
             // Check if this object property has already been visited
             var i, len = _visited.length;
