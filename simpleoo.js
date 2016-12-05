@@ -149,29 +149,10 @@ define([], function() {
      * 
      * It also borrows some code from http://stackoverflow.com/a/11621004/560114
      */ 
-    function deepCopy(src, /* INTERNAL */ _visited) {
-        if(src == null || typeof(src) !== 'object'){
+    function deepCopy(src, /* INTERNAL */ _dest, _visited, _copiesVisited) {
+        if(src === null || typeof(src) !== 'object'){
             return src;
         }
-
-        // Initialize the visited objects array if needed
-        // This is used to detect cyclic references
-        if (_visited == undefined){
-            _visited = [];
-        }
-        // Otherwise, ensure src has not already been visited
-        else {
-            var i, len = _visited.length;
-            for (i = 0; i < len; i++) {
-                // If src was already visited, don't try to copy it, just return the reference
-                if (src === _visited[i]) {
-                    return src;
-                }
-            }
-        }
-
-        // Add this object to the visited array
-        _visited.push(src);
         
         //Honor native/custom clone methods
         if(typeof src.clone == 'function'){
@@ -180,7 +161,7 @@ define([], function() {
         
         //Special cases:
         //Date
-        if (src instanceof Date){
+        if(src instanceof Date){
             return new Date(src.getTime());
         }
         //RegExp
@@ -195,18 +176,61 @@ define([], function() {
         //If we've reached here, we have a regular object, array, or function
         
         //make sure the returned object has the same prototype as the original
-        var proto = (Object.getPrototypeOf ? Object.getPrototypeOf(src): src.__proto__);
-        if (!proto) {
-            proto = src.constructor.prototype; //this line would probably only be reached by very old browsers 
+        var copyPrototype = function(obj) {
+            var proto = (Object.getPrototypeOf ? Object.getPrototypeOf(src): src.__proto__);
+            if (!proto) {
+                proto = src.constructor.prototype; //this line would probably only be reached by very old browsers 
+            }
+            return object_create(proto);
         }
-        var ret = object_create(proto);
         
-        for(var key in src){
+        //destination object
+        if (!_dest) {
+            _dest = copyPrototype(src);
+        }
+        
+        // Initialize the visited objects arrays if needed.
+        // This is used to detect cyclic references.
+        if (_visited === undefined){
+            //initialize with the root object
+            _visited = [src];
+            _copiesVisited = [_dest];
+        }
+        
+        for (var key in src) {
+            var val, copy;
+            val = src[key];
+            if (val === null || typeof val !== 'object') {
+				_dest[key] = val;
+                continue;
+			}
+            
+            // Check if this object property has already been visited
+            var i, len = _visited.length;
+            for (i = 0; i < len; i++) {
+                // If so, get the copy we already made
+                if (val === _visited[i]) {
+                    copy = _copiesVisited[i];
+                    break;
+                }
+            }
+            
+            if (!copy) {
+                // Add this object to the visited array
+                _visited.push(val);
+                //We create an empty destination object before calling deepCopy() because
+                //we need to add it to the _copiesVisited array first.
+                copy = copyPrototype(val);
+                _copiesVisited.push(copy);
+                
+                deepCopy(val, copy, _visited, _copiesVisited);
+            }
+            
             //Note: this does NOT preserve ES5 property attributes like 'writable', 'enumerable', etc.
             //For an example of how this could be modified to do so, see the singleMixin() function
-            ret[key] = deepCopy(src[key], _visited);
+            _dest[key] = copy;
         }
-        return ret;
+        return _dest;
     }
     
     return {

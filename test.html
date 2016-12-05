@@ -11,7 +11,7 @@ function define(dependencies, definition) {
 <script src="simpleoo.js"></script>
 <script>
 
-var log = console.log;
+var log = console.log.bind(console);
 var extend = simpleoo.extend;
 var mixin = simpleoo.mixin;
 var deepCopy = simpleoo.deepCopy;
@@ -132,6 +132,11 @@ grandchild.parent = child;
 grandchild.child = null;
 copyme.thing = child;
 log(copyme);
-log(deepCopy(copyme));
+var copied = deepCopy(copyme);
+log(copied);
+
+//ensure that the cyclic-referenced object was cloned correctly
+log(copied.thing.child.parent !== child); //true
+log(copied.thing.child.parent === copied.thing); //true
 
 </script>
