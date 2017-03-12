@@ -192,7 +192,7 @@ define([], function() {
         //Array
         if (Object.prototype.toString.call(src) == '[object Array]') {
             //[].slice() by itself would soft clone
-            ret = src.slice();
+            var ret = src.slice();
             
             //add it to the visited array
             _visited.push(src);
